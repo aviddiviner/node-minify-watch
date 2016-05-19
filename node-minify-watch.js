@@ -29,6 +29,7 @@ exports.watch = function(opts) {
         } else {
           var runOpts = Object.assign({}, opts);
           if (typeof runOpts.fileIn === 'function')  runOpts.fileIn  = runOpts.fileIn(fullpath);
+          if (typeof runOpts.fileIn === 'undefined') runOpts.fileIn  = fullpath;
           if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(fullpath);
           if (runOpts.fileIn && runOpts.fileOut) {
             var i = runCounter++;
@@ -51,8 +52,8 @@ exports.watch = function(opts) {
     }
   });
   var showOpts = Object.assign({}, opts);
-  showOpts.fileIn = showOpts.fileIn.toString();
-  showOpts.fileOut = showOpts.fileOut.toString();
+  if (typeof showOpts.fileIn === 'function')  showOpts.fileIn = showOpts.fileIn.toString();
+  if (typeof showOpts.fileOut === 'function') showOpts.fileOut = showOpts.fileOut.toString();
   console.log('watch:' + watch, showOpts);
 }
 
