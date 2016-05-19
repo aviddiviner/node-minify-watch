@@ -26,7 +26,7 @@ The options that this module checks are:
 
 The rest of the options are passed to [node-minify](https://github.com/srod/node-minify).  Take a look at [test.js](test.js) for more examples.
 
-***Note:** Be careful not to output to the same folder that you are watching, as it could cause an infinite loop!*
+_**Note:** Be careful not to output to the same folder that you are watching, as it could cause an infinite loop!_
 
 ## See Also
 
