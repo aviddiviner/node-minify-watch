@@ -1,0 +1,8 @@
+{
+  "name": "node-minify-watch",
+  "version": "1.0.0",
+  "description": "Watch the filesystem for changes and trigger node-minify.",
+  "main": "node-minify-watch.js",
+  "author": "David Irvine",
+  "license": "MIT"
+}
