@@ -1,7 +1,12 @@
-const _ = require('highland');
 const fs = require('fs');
 const path = require('path');
 const compressor = require('node-minify');
+
+function ts() {
+  return new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+}
+
+// -----------------------------------------------------------------------------
 
 var watchCounter = 1;
 
@@ -14,9 +19,8 @@ exports.watch = function(opts) {
   fs.accessSync(root, fs.R_OK);  // check read access
   fs.watch(root, {recursive: opts.recursive}, (event, filename) => {
     var log = function(msgtype, args) {
-      var ts = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
       var msg = Array.prototype.slice.call(arguments, 1).join(' ');
-      console.log(ts, '(watch:' + watch + ' ' + msgtype + ')', event, '[', root, filename, ']', msg);
+      console.log(ts(), '(watch:' + watch + ' ' + msgtype + ')', event, '[', root, filename, ']', msg);
     }
     if (filename) {
       var fullpath = path.join(root, filename);
@@ -24,7 +28,7 @@ exports.watch = function(opts) {
         if (err) {
           log('skip:noread');
         } else {
-          var runOpts = _.extend(opts, {});
+          var runOpts = Object.assign({}, opts);
           if (typeof runOpts.fileIn === 'function')  runOpts.fileIn  = runOpts.fileIn(fullpath);
           if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(fullpath);
           if (runOpts.fileIn && runOpts.fileOut) {
@@ -36,7 +40,7 @@ exports.watch = function(opts) {
                 log('run:' + i, '(built) ->', this.fileOut);
               }
             }
-            log('run:' + i, runOpts.fileIn, '-> (build)');
+            log('run:' + i, runOpts.fileIn, '-> (building...)');
             new compressor.minify(runOpts);
           } else {
             log('skip');
@@ -47,7 +51,7 @@ exports.watch = function(opts) {
       log('skip:nofile');
     }
   });
-  var showOpts = _.extend(opts, {});
+  var showOpts = Object.assign({}, opts);
   showOpts.fileIn = showOpts.fileIn.toString();
   showOpts.fileOut = showOpts.fileOut.toString();
   console.log('watch:' + watch, showOpts);
@@ -57,17 +61,16 @@ exports.watch = function(opts) {
 
 var miniCounter = 1;
 
-exports.minify = function(opts) {
+exports.once = function(opts) {
   opts.fileIn.forEach((filepath) => {
     var build = miniCounter++;
     var log = function(args) {
-      var ts = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
       var msg = Array.prototype.slice.call(arguments).join(' ');
-      console.log(ts, '(minify:' + build + ')', '[', filepath, ']', msg);
+      console.log(ts(), '(minify:' + build + ')', '[', filepath, ']', msg);
     }
     fs.access(filepath, fs.R_OK, (err) => {
       if (err) {
-        var runOpts = _.extend(opts, {});
+        var runOpts = Object.assign({}, opts);
         runOpts.fileIn = filepath;
         if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(filepath);
         runOpts.callback = function(err, min) {

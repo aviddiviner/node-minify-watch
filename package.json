@@ -4,7 +4,6 @@
   "description": "Watch the filesystem for changes and trigger node-minify.",
   "main": "node-minify-watch.js",
   "dependencies": {
-    "highland": "^2.8.1",
     "node-minify": "^1.3.7"
   },
   "author": "David Irvine",
