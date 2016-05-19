@@ -10,7 +10,6 @@ function ts() {
 
 var watchCounter = 1;
 
-// var exports = module.exports = {};
 exports.watch = function(opts) {
   var watch = watchCounter++;
   var runCounter = 1;
@@ -59,20 +58,22 @@ exports.watch = function(opts) {
 
 // -----------------------------------------------------------------------------
 
-var miniCounter = 1;
+var onceCounter = 1;
 
 exports.once = function(opts) {
-  opts.fileIn.forEach((filepath) => {
-    var build = miniCounter++;
+  opts.fileIn.forEach((srcpath) => {
+    var build = onceCounter++;
     var log = function(args) {
       var msg = Array.prototype.slice.call(arguments).join(' ');
-      console.log(ts(), '(minify:' + build + ')', '[', filepath, ']', msg);
+      console.log(ts(), '(minify:' + build + ')', '[', srcpath, ']', msg);
     }
-    fs.access(filepath, fs.R_OK, (err) => {
+    fs.accessSync(srcpath, fs.R_OK);
+    var runOpts = Object.assign({}, opts);
+    runOpts.fileIn = srcpath;
+    if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(srcpath);
+    var destpath = runOpts.fileOut;
+    fs.access(destpath, fs.F_OK, (err) => {
       if (err) {
-        var runOpts = Object.assign({}, opts);
-        runOpts.fileIn = filepath;
-        if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(filepath);
         runOpts.callback = function(err, min) {
           if (err) {
             log('error:', err);
@@ -83,7 +84,7 @@ exports.once = function(opts) {
         log(runOpts.fileIn, '-> (build)');
         new compressor.minify(runOpts);
       } else {
-        log('skip');
+        log('skip:exists', destpath);
       }
     });
   });
