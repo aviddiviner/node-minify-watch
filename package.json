@@ -1,10 +1,17 @@
 {
   "name": "node-minify-watch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Watch the filesystem for changes and trigger node-minify.",
   "main": "node-minify-watch.js",
   "dependencies": {
     "node-minify": "^1.3.7"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0"
+  },
+  "scripts": {
+    "build": "babel node-minify-watch.es6 -o node-minify-watch.js"
   },
   "author": "David Irvine",
   "license": "MIT",
