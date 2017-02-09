@@ -31,6 +31,7 @@ exports.watch = function(opts) {
           if (typeof runOpts.fileIn === 'function')  runOpts.fileIn  = runOpts.fileIn(fullpath);
           if (typeof runOpts.fileIn === 'undefined') runOpts.fileIn  = fullpath;
           if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(fullpath);
+          if (typeof runOpts.options === 'function') runOpts.options = runOpts.options(fullpath);
           if (runOpts.fileIn && runOpts.fileOut) {
             var i = runCounter++;
             runOpts.callback = function(err, min) {
@@ -72,6 +73,7 @@ exports.once = function(opts) {
     var runOpts = Object.assign({}, opts);
     runOpts.fileIn = srcpath;
     if (typeof runOpts.fileOut === 'function') runOpts.fileOut = runOpts.fileOut(srcpath);
+    if (typeof runOpts.options === 'function') runOpts.options = runOpts.options(srcpath);
     var destpath = runOpts.fileOut;
     fs.access(destpath, fs.F_OK, (err) => {
       if (err) {
